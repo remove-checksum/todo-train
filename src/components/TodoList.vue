@@ -1,11 +1,19 @@
 <template>
-  <div>TodoHere</div>
+  <div>
+    <input
+      type="text"
+      class="todo-input"
+      @click="doSomething()"
+    >
+    TodoHere
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'todo-list'
+  name: "TodoList"
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+</style>
