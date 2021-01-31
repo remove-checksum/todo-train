@@ -5,7 +5,7 @@
         <label>
           <input
             type="checkbox"
-            :checked="!anyRemaining"
+            :checked="todos.length === 0 ? false : !anyRemaining"
             @change="checkAllTodos"
           >
           Check All
@@ -23,44 +23,15 @@
       <transition-group
         name="fade"
       >
-        <div
+        <todo-item
           v-for="(todo, index) in todosFiltered"
           :key="todo.id"
-          class="todo-item"
-        >
-          <div
-            class="todo-item-left"
-          >
-            <input
-              v-model="todo.completed"
-              type="checkbox"
-            >
-            <div
-              v-if="!todo.editing"
-              class="todo-item-label"
-              :class="{ completed: todo.completed }"
-              @dblclick="editTodo(todo)"
-            >
-              {{ todo.title }}
-            </div>
-            <input
-              v-else
-              v-model="todo.title"
-              v-focus
-              type="text"
-              class="todo-item-edit"
-              @blur="doneEdit(todo)"
-              @keyup.enter="doneEdit(todo)"
-              @keyup.esc="cancelEdit(todo)"
-            >
-          </div>
-          <button
-            class="remove-item"
-            @click="removeTodo(index)"
-          >
-            &times;
-          </button>
-        </div>
+          :todo="todo"
+          :index="index"
+          :check-all="!anyRemaining"
+          @removedTodo="removeTodo"
+          @finishedEdit="finishEdit"
+        />
       </transition-group>
     </div>
     <div class="todo-extra">
@@ -100,8 +71,13 @@
 </template>
 
 <script>
+import TodoItem from './TodoItem.vue'
+
 export default {
   name: 'TodoList',
+  components: {
+    TodoItem
+  },
   data() {
     return {
       newTodo: '',
@@ -149,39 +125,30 @@ export default {
     }
   },
   methods: {
-  addTodo() {
-    if (this.newTodo === '') return;
-    this.todos.push({
-      id: this.idForTodo,
-      title: this.newTodo,
-      completed: false,
-      editing: false
-    })
-    this.newTodo = '';
-    this.idForTodo++;
+    addTodo() {
+      if (this.newTodo === '') return;
+      this.todos.unshift({
+        id: this.idForTodo,
+        title: this.newTodo,
+        completed: false,
+        editing: false
+      })
+      this.newTodo = '';
+      this.idForTodo++;
+    },
+    removeTodo(index) {
+      this.todos.splice(index, 1);
+    },
+    checkAllTodos() {
+      this.todos.forEach((todo) => todo.completed = event.target.checked)
+    },
+    clearCompleted() {
+      this.todos = this.todos.filter((todo) => !todo.completed)
+    },
+    finishEdit(data) {
+      this.todos.splice(data.index, 1, data.todo)
+    }
   },
-  removeTodo(index) {
-    this.todos.splice(index, 1);
-  },
-  editTodo(todo) {
-    this.beforeEditCache = todo.title;
-    todo.editing = true;
-  },
-  doneEdit(todo) {
-    if(todo.title === '') todo.title = this.beforeEditCache;
-    todo.editing = false;
-  },
-  cancelEdit(todo) {
-    todo.title = this.beforeEditCache
-    todo.editing = false;
-  },
-  checkAllTodos() {
-    this.todos.forEach((todo) => todo.completed = event.target.checked)
-  },
-  clearCompleted() {
-    this.todos = this.todos.filter((todo) => !todo.completed)
-  }
-}
 };
 </script>
 
