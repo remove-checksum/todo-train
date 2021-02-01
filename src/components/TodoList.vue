@@ -125,6 +125,7 @@ export default {
   created() {
     eventBus.$on('removedTodo', (index) => this.removeTodo(index));
     eventBus.$on('finishedEdit', (data) => this.finishEdit(data));
+    eventBus.$on('pluralize', () => this.pluralize());
   },
   methods: {
     addTodo() {
@@ -149,7 +150,7 @@ export default {
     },
     finishEdit(data) {
       this.todos.splice(data.index, 1, data.todo);
-    }
+    },
   },
 };
 </script>
@@ -222,8 +223,8 @@ input[type="checkbox"] {
 }
 
 .todos-wrapper {
-  min-height: 200px;
-  max-height: 400px;
+  min-height: 250px;
+  max-height: 250px;
   overflow: scroll;
 }
 

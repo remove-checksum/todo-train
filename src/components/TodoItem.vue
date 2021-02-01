@@ -26,6 +26,11 @@
       >
     </div>
     <button
+      @click="pluralize"
+    >
+      Pluralize
+    </button>
+    <button
       class="remove-item"
       @click="removeTodo(index)"
     >
@@ -65,6 +70,12 @@ export default {
       this.completed = this.checkAll ? true : this.todo.completed;
     }
   },
+  created() {
+    eventBus.$on('pluralize', this.handlePluralize);
+  },
+  beforeDestroy() {
+    eventBus.$off('pluralize', this.handlePluralize);
+  },
   methods: {
     removeTodo(index) {
       eventBus.$emit('removedTodo', index);
@@ -90,6 +101,21 @@ export default {
       this.title = this.beforeEditCache;
       this.editing = false;
     },
+    pluralize() {
+      eventBus.$emit('pluralize');
+    },
+    handlePluralize() {
+      this.title = this.title[this.title.length - 1] === 's' ? this.title.slice(0, -1) : `${this.title}s`;
+      eventBus.$emit('finishedEdit', {
+        index: this.index,
+        todo: {
+          id: this.id,
+          title: this.title,
+          completed: this.completed,
+          editing: this.editing
+        }
+      });
+    }
   }
 };
 </script>
