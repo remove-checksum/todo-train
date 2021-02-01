@@ -58,16 +58,16 @@ export default {
       completed: this.todo.completed,
       editing: this.todo.editing,
       beforeEditCache: '',
-    }
+    };
   },
   watch: {
     checkAll() {
-      this.completed = this.checkAll ? true : this.todo.completed
+      this.completed = this.checkAll ? true : this.todo.completed;
     }
   },
   methods: {
     removeTodo(index) {
-      this.$emit('removedTodo', index)
+      this.$emit('removedTodo', index);
     },
     editTodo() {
       this.beforeEditCache = this.title;
@@ -84,12 +84,12 @@ export default {
           completed: this.completed,
           editing: this.editing
         }
-      })
+      });
     },
     cancelEdit() {
-      this.title = this.beforeEditCache
+      this.title = this.beforeEditCache;
       this.editing = false;
     },
   }
-}
+};
 </script>

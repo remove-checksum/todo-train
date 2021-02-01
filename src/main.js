@@ -5,9 +5,9 @@ Vue.config.productionTip = false;
 
 Vue.directive('focus', {
   inserted: function (el) {
-    el.focus()
+    el.focus();
   }
-})
+});
 
 new Vue({
   render: h => h(App)

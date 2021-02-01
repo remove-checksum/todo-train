@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import TodoItem from './TodoItem.vue'
+import TodoItem from './TodoItem.vue';
 
 export default {
   name: 'TodoList',
@@ -98,7 +98,7 @@ export default {
           editing: false
         }
       ],
-    }
+    };
   },
   computed: {
     remaining() {
@@ -121,7 +121,7 @@ export default {
       return this.todos;
     },
     showClearCompleted() {
-      return this.todos.some((todo) => todo.completed)
+      return this.todos.some((todo) => todo.completed);
     }
   },
   methods: {
@@ -132,7 +132,7 @@ export default {
         title: this.newTodo,
         completed: false,
         editing: false
-      })
+      });
       this.newTodo = '';
       this.idForTodo++;
     },
@@ -140,13 +140,13 @@ export default {
       this.todos.splice(index, 1);
     },
     checkAllTodos() {
-      this.todos.forEach((todo) => todo.completed = event.target.checked)
+      this.todos.forEach((todo) => todo.completed = event.target.checked);
     },
     clearCompleted() {
-      this.todos = this.todos.filter((todo) => !todo.completed)
+      this.todos = this.todos.filter((todo) => !todo.completed);
     },
     finishEdit(data) {
-      this.todos.splice(data.index, 1, data.todo)
+      this.todos.splice(data.index, 1, data.todo);
     }
   },
 };
