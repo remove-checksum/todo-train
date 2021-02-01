@@ -14,6 +14,9 @@ module.exports = {
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
     "semi": "error",
-    "quotes": ["error", "single"]
+    "quotes": ["error", "single"],
+  },
+  "globals": {
+    "eventBus": true
   }
 };

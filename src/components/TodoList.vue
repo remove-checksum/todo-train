@@ -29,8 +29,6 @@
           :todo="todo"
           :index="index"
           :check-all="!anyRemaining"
-          @removedTodo="removeTodo"
-          @finishedEdit="finishEdit"
         />
       </transition-group>
     </div>
@@ -123,6 +121,10 @@ export default {
     showClearCompleted() {
       return this.todos.some((todo) => todo.completed);
     }
+  },
+  created() {
+    eventBus.$on('removedTodo', (index) => this.removeTodo(index));
+    eventBus.$on('finishedEdit', (data) => this.finishEdit(data));
   },
   methods: {
     addTodo() {
