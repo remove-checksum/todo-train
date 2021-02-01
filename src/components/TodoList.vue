@@ -93,7 +93,7 @@ export default {
         },
         {
           id: 2,
-          title: 'OOga booga',
+          title: 'Yes no maybe',
           completed: false,
           editing: false
         }
