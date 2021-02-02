@@ -1,16 +1,11 @@
 <template>
   <div>
     <div class="todo-header">
-      <div class="check-all">
-        <label>
-          <input
-            type="checkbox"
-            :checked="todos.length === 0 ? false : !anyRemaining"
-            @change="checkAllTodos"
-          >
-          Check All
-        </label>
-      </div>
+      <todo-check-all
+        :remaining="anyRemaining"
+        :length="todos.length"
+        class="check-all"
+      />
       <input
         v-model="newTodo"
         type="text"
@@ -22,6 +17,7 @@
     <div class="todos-wrapper">
       <transition-group
         name="fade"
+        mode="out-in"
       >
         <todo-item
           v-for="(todo, index) in todosFiltered"
@@ -33,48 +29,35 @@
       </transition-group>
     </div>
     <div class="todo-extra">
-      <div>{{ plural }}</div>
-      <div>
-        <button
-          :class="{ active: filter === 'all'}"
-          @click="filter = 'all'"
-        >
-          All
-        </button>
-        <button
-          :class="{ active: filter === 'active'}"
-          @click="filter = 'active'"
-        >
-          Active
-        </button>
-        <button
-          :class="{ active: filter === 'completed'}"
-          @click="filter = 'completed'"
-        >
-          Completed
-        </button>
-      </div>
+      <todo-filtered :filter="filter" />
       <div>
         <transition name="fade">
-          <button
-            v-if="showClearCompleted"
-            @click="clearCompleted"
-          >
-            Clear completed
-          </button>
+          <todo-clear-completed v-if="showClearCompleted" />
         </transition>
       </div>
+      <todo-items-remaining
+        :remaining="remaining"
+        class="todo-remaining"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import TodoItem from './TodoItem.vue';
+import TodoItemsRemaining from './TodoItemsRemaining.vue';
+import TodoCheckAll from './TodoCheckAll.vue';
+import TodoClearCompleted from './TodoClearCompleted.vue';
+import TodoFiltered from './TodoFiltered.vue';
 
 export default {
   name: 'TodoList',
   components: {
-    TodoItem
+    TodoItem,
+    TodoItemsRemaining,
+    TodoCheckAll,
+    TodoClearCompleted,
+    TodoFiltered
   },
   data() {
     return {
@@ -102,9 +85,6 @@ export default {
     remaining() {
       return this.todos.filter((todo) => !todo.completed).length;
     },
-    plural() {
-      return `${this.remaining} ${this.remaining === 1 ? 'item' : 'items'} left`;
-    },
     anyRemaining() {
       return this.remaining !== 0;
     },
@@ -126,11 +106,14 @@ export default {
     eventBus.$on('removedTodo', (index) => this.removeTodo(index));
     eventBus.$on('finishedEdit', (data) => this.finishEdit(data));
     eventBus.$on('pluralize', () => this.pluralize());
+    eventBus.$on('checkAllChanged', (checked) => this.checkAllTodos(checked));
+    eventBus.$on('clearCompleted', () => this.clearCompleted());
+    eventBus.$on('changeFilter', (status) => this.filter = status);
   },
   methods: {
     addTodo() {
       if (this.newTodo === '') return;
-      this.todos.unshift({
+      this.todos.push({
         id: this.idForTodo,
         title: this.newTodo,
         completed: false,
@@ -266,7 +249,7 @@ input[type="checkbox"] {
   background-color: #41b883;
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active { // no animation on leave so filtering look snappy
   transition: opacity .2s;
 }
 

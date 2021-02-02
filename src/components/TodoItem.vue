@@ -72,6 +72,7 @@ export default {
   },
   created() {
     eventBus.$on('pluralize', this.handlePluralize);
+    eventBus.$on('checkAllTodos', this.handleCheckAll);
   },
   beforeDestroy() {
     eventBus.$off('pluralize', this.handlePluralize);
